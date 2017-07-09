@@ -1,9 +1,23 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>jp-atlas-example</title>
+    <link href="/style.css" media="all" rel="stylesheet">
 </head>
 <body>
+    <div class="container">
+        <h1>jp-atlas-example</h1>
+        <p>An example of rendering Japan's administrative divisions and population with TopoJSON and D3.</p>
+        <footer>
+            <ul>
+                <li>Map: <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v2_3.html">MLIT, 2017</a></li>
+                <li>Source: <a href="http://www.soumu.go.jp/menu_news/s-news/01gyosei02_02000148.html">MIC, 2017</a> <span class="original-source">(日本人住民 - 平成29年住民基本台帳年齢階級別人口 市区町村別)</span></li>
+            </ul>
+        </footer>
+        <div id="popup" style="visibility: hidden"></div>
+    </div>
+    <div id="map"></div>
     <script src="/bundle.js"></script>
 </body>
 </html>
