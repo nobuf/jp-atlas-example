@@ -4,7 +4,7 @@ An example of rendering Japan's administrative divisions and population with Top
 
 ## Demo
 
-
+https://nobuf.github.io/jp-atlas-example/
 
 ## Data
 
