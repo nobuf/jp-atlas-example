@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>jp-atlas-example</title>
-    <link href="/style.css" media="all" rel="stylesheet">
+    <link href="style.css" media="all" rel="stylesheet">
 </head>
 <body>
+    <div id="map"></div>
+    <div class="loading-container">
+        <div class="loading-pulse"></div>
+    </div>
     <div class="container">
         <h1>jp-atlas-example</h1>
         <p>An example of rendering Japan's administrative divisions and population with TopoJSON and D3.</p>
@@ -17,7 +21,6 @@
         </footer>
         <div id="popup" style="visibility: hidden"></div>
     </div>
-    <div id="map"></div>
-    <script src="/bundle.js"></script>
+    <script src="bundle.js"></script>
 </body>
 </html>

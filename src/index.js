@@ -23,7 +23,7 @@ const zoomed = () => {
 }
 
 const zoom = d3.zoom()
-  .scaleExtent([0.1, 40])
+  .scaleExtent([0.2, 4])
   .on('start', () => map.style('cursor', 'move'))
   .on('end', () => map.style('cursor', 'default'))
   .on('zoom', zoomed)
@@ -33,8 +33,7 @@ map.call(zoom)
 const parsePopulationCSV = (d) => {
   return {
     id: d['団体コード'] ? d['団体コード'].substr(0, 5) : '',
-    total: +d['総数'],
-    gender: d['性別']
+    total: +d['総数']
   }
 }
 
@@ -96,35 +95,38 @@ d3.queue()
   .await((error, jp, cities, population) => {
     if (error) throw error
 
-    const totalPopulation = population.filter((d) => {
-      return d.gender === '計'
-    })
-    const z = d3.scaleQuantile()
-      .domain(totalPopulation.map(d => d.total))
-      .range(d3.quantize(d3.interpolateViridis, 256))
+    // fade out the loading animation first
+    d3.select('.loading-pulse')
+      .classed('fadeout', true)
 
-    jp = addExtraInfo(jp, cities, totalPopulation)
+    // make a slight delay so the map appears smoothly
+    setTimeout(() => {
+      const z = d3.scaleQuantile()
+        .domain(population.map(d => d.total))
+        .range(d3.quantize(d3.interpolateViridis, 256))
 
-    g.append('g')
-      .attr('class', 'city')
-      .selectAll('path')
-      .data(topojson.feature(jp, jp.objects.cities).features)
-      .enter()
-      .append('path')
-      .attr('d', path)
-      .attr('class', d => 'c' + d.id)
-      // Apparently not all the administrative district has population data
-      .style('fill', d => z(d.properties.population ? d.properties.population.total : 0))
-      .on('mouseenter', function () {
-        // Change the order, otherwise the width of stroke could be inconsistent
-        this.parentNode.appendChild(this)
-        this.classList.add('highlight')
-      })
-      .on('mouseout', function () { this.classList.remove('highlight') })
-      .on('mouseover', popup)
-    g.append('path')
-      .attr('class', 'city-borders')
-      .attr('d', path(topojson.mesh(jp, jp.objects.cities, (a, b) => {
-        return a !== b
-      })))
+      jp = addExtraInfo(jp, cities, population)
+
+      g.append('g')
+        .attr('class', 'city')
+        .selectAll('path')
+        .data(topojson.feature(jp, jp.objects.cities).features)
+        .enter()
+        .append('path')
+        .attr('d', path)
+        .attr('class', d => 'c' + d.id)
+        // Apparently not all the administrative district has population data
+        .style('fill', d => z(d.properties.population ? d.properties.population.total : 0))
+        .style('stroke', 'white')
+        .style('stroke-width', '0.1px')
+        .on('mouseenter', function () {
+          // Change the order, otherwise the width of stroke could be inconsistent
+          this.parentNode.appendChild(this)
+          d3.select(this).style('stroke-width', '1px')
+        })
+        .on('mouseout', function () { d3.select(this).style('stroke-width', '0.1px') })
+        .on('mouseover', popup)
+      d3.select('.loading-container')
+        .classed('fadeout', true)
+    }, 100)
   })
