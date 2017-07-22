@@ -8,7 +8,7 @@ https://nobuf.github.io/jp-atlas-example/
 
 ## Data
 
-### population_in_japan_2017.csv
+### 100_year_old_population_in_japan_2017.csv
 
 http://www.soumu.go.jp/menu_news/s-news/01gyosei02_02000148.html
 
