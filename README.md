@@ -19,8 +19,8 @@ curl -O http://www.soumu.go.jp/main_content/000494090.xls
 curl -F "file=@000494090.xls" http://localhost:5001/ \
   | grep -v ",男," \
   | grep -v ",女," \
-  | awk -F "\"*,\"*" '{print $1","$5}' \
-  | tail -n +2 > docs/population_in_japan_2017.csv
+  | awk -F "\"*,\"*" '{print $1","$5","$26}' \
+  | tail -n +2 > docs/100_year_old_population_in_japan_2017.csv
 ```
 
 ### cities_in_japan_2016.csv

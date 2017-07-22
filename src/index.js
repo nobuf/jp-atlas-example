@@ -12,8 +12,8 @@ const g = map.append('g')
 
 const projection = d3.geoMercator()
   .center([137, 34])
-  .scale(7000)
-  .translate([40, 1700])
+  .scale(2500)
+  .translate([500, 650])
 
 const path = d3.geoPath()
   .projection(projection)
@@ -33,6 +33,8 @@ map.call(zoom)
 const parsePopulationCSV = (d) => {
   return {
     id: d['団体コード'] ? d['団体コード'].substr(0, 5) : '',
+    over_hundred: +d['100歳以上'],
+    percentage_of_over_hundred: +d['100歳以上'] / +d['総数'] * 100,
     total: +d['総数']
   }
 }
@@ -72,13 +74,17 @@ const popup = (d) => {
               <th>Prefecture ID</th>
               <th>Original Name</th>
               <th>Population</th>
+              <th>100+ years old</th>
+              <th>% of 100+</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>${d.properties.info.prefecture_id}</td>
               <td>${d.properties.info.city_ja} ${d.properties.info.special_district_ja}</td>
-              <td class="population">${d3.format(',')(d.properties.population.total)}</td>
+              <td>${d3.format(',')(d.properties.population.total)}</td>
+              <td>${d3.format(',')(d.properties.population.over_hundred)}</td>
+              <td>${(d.properties.population.percentage_of_over_hundred).toFixed(2)}%</td>
             </tr>
           </tbody>
         </table>
@@ -91,7 +97,7 @@ const popup = (d) => {
 d3.queue()
   .defer(d3.json, 'japan-2017-topo.json')
   .defer(d3.csv, 'cities_in_japan_2016.csv')
-  .defer(d3.csv, 'population_in_japan_2017.csv', parsePopulationCSV)
+  .defer(d3.csv, '100_year_old_population_in_japan_2017.csv', parsePopulationCSV)
   .await((error, jp, cities, population) => {
     if (error) throw error
 
@@ -102,8 +108,8 @@ d3.queue()
     // make a slight delay so the map appears smoothly
     setTimeout(() => {
       const z = d3.scaleQuantile()
-        .domain(population.map(d => d.total))
-        .range(d3.quantize(d3.interpolateViridis, 256))
+        .domain(population.map(d => d.percentage_of_over_hundred))
+        .range(d3.quantize(d3.interpolateMagma, 20))
 
       jp = addExtraInfo(jp, cities, population)
 
@@ -116,7 +122,7 @@ d3.queue()
         .attr('d', path)
         .attr('class', d => 'c' + d.id)
         // Apparently not all the administrative district has population data
-        .style('fill', d => z(d.properties.population ? d.properties.population.total : 0))
+        .style('fill', d => z(d.properties.population ? d.properties.population.percentage_of_over_hundred : 0))
         .style('stroke', 'white')
         .style('stroke-width', '0.1px')
         .on('mouseenter', function () {
