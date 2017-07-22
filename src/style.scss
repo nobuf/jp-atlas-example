@@ -41,19 +41,22 @@ h1 {
 
     thead {
       th {
-        padding-right: 2em;
+        padding-left: 2em;
         font-size: 90%;
         font-weight: 300;
+        text-align: right;
       }
 
-      th:last-child {
-        padding-right: 0;
+      th:first-child {
+        padding-left: 0;
       }
     }
-  }
 
-  .population {
-    text-align: right;
+    tbody {
+      td {
+        text-align: right;
+      }
+    }
   }
 }
 
